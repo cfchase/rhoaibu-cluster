@@ -2,9 +2,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  # Base bootstrap (GitOps operator + ArgoCD instance)
-  - ../../components/operators/openshift-gitops-operator/operator
-  - ../../components/operators/openshift-gitops-operator/instance
+  # ArgoCD projects for RBAC separation
+  # Note: GitOps operator and ArgoCD instance assumed to be pre-installed
   - ../../components/argocd/projects/overlays
   # Root application for nightly cluster
   - cluster-config-app.yaml
