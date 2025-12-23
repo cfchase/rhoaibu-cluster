@@ -30,16 +30,15 @@
     exclude: true
 
 # Add rhoai-operator via list generator pointing to nightly overlay
+# Note: path.basename is used for app name, so we set it explicitly for list generators
 - op: add
   path: /spec/generators/-
   value:
     list:
       elements:
         - cluster: local
-          values:
-            name: rhoai-operator
-            path: components/operators/rhoai-operator/overlays/nightly
-            namespace: openshift-gitops
+          path: components/operators/rhoai-operator/overlays/nightly
+          path.basename: rhoai-operator
 
 # Add nightly-only operators via list generator
 - op: add
@@ -48,22 +47,14 @@
     list:
       elements:
         - cluster: local
-          values:
-            name: kueue-operator
-            path: components/operators-nightly/kueue-operator
-            namespace: openshift-gitops
+          path: components/operators-nightly/kueue-operator
+          path.basename: kueue-operator
         - cluster: local
-          values:
-            name: jobset-operator
-            path: components/operators-nightly/jobset-operator
-            namespace: openshift-gitops
+          path: components/operators-nightly/jobset-operator
+          path.basename: jobset-operator
         - cluster: local
-          values:
-            name: leader-worker-set
-            path: components/operators-nightly/leader-worker-set
-            namespace: openshift-gitops
+          path: components/operators-nightly/leader-worker-set
+          path.basename: leader-worker-set
         - cluster: local
-          values:
-            name: connectivity-link
-            path: components/operators-nightly/connectivity-link
-            namespace: openshift-gitops
+          path: components/operators-nightly/connectivity-link
+          path.basename: connectivity-link
