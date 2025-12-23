@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cluster-config
+  namespace: openshift-gitops
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/cfchase/rhoaibu-cluster
+    targetRevision: dev-nightly
+    path: clusters/overlays/rhoaibu-cluster-nightly
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: openshift-gitops
+  # No syncPolicy - manual sync required for staged deployment

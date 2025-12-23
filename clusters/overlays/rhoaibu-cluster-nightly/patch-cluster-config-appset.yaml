@@ -1,0 +1,22 @@
+# Use cfchase fork and dev-nightly branch
+- op: replace
+  path: /spec/template/spec/source/repoURL
+  value: https://github.com/cfchase/rhoaibu-cluster
+- op: replace
+  path: /spec/template/spec/source/targetRevision
+  value: dev-nightly
+
+# Point console config to dev overlay
+- op: replace
+  path: /spec/generators/0/list/elements/1/values/path
+  value: components/configs/console/overlays/rhoaibu-cluster-dev
+
+# Disable auto-sync: ApplicationSet only creates apps, doesn't update them
+- op: add
+  path: /spec/syncPolicy
+  value:
+    applicationsSync: create-only
+# Apps created with empty syncPolicy (no auto-sync)
+- op: replace
+  path: /spec/template/spec/syncPolicy
+  value: {}

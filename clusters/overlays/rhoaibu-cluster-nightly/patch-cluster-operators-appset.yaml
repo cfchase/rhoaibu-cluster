@@ -1,0 +1,69 @@
+# Use cfchase fork and dev-nightly branch
+- op: replace
+  path: /spec/generators/0/git/repoURL
+  value: https://github.com/cfchase/rhoaibu-cluster
+- op: replace
+  path: /spec/generators/0/git/revision
+  value: dev-nightly
+- op: replace
+  path: /spec/template/spec/source/repoURL
+  value: https://github.com/cfchase/rhoaibu-cluster
+- op: replace
+  path: /spec/template/spec/source/targetRevision
+  value: dev-nightly
+
+# Disable auto-sync: ApplicationSet only creates apps, doesn't update them
+- op: add
+  path: /spec/syncPolicy
+  value:
+    applicationsSync: create-only
+# Apps created with empty syncPolicy (no auto-sync)
+- op: replace
+  path: /spec/template/spec/syncPolicy
+  value: {}
+
+# Exclude rhoai-operator from git generator (will add via list generator with nightly overlay)
+- op: add
+  path: /spec/generators/0/git/directories/-
+  value:
+    path: components/operators/rhoai-operator
+    exclude: true
+
+# Add rhoai-operator via list generator pointing to nightly overlay
+- op: add
+  path: /spec/generators/-
+  value:
+    list:
+      elements:
+        - cluster: local
+          values:
+            name: rhoai-operator
+            path: components/operators/rhoai-operator/overlays/nightly
+            namespace: openshift-gitops
+
+# Add nightly-only operators via list generator
+- op: add
+  path: /spec/generators/-
+  value:
+    list:
+      elements:
+        - cluster: local
+          values:
+            name: kueue-operator
+            path: components/operators-nightly/kueue-operator
+            namespace: openshift-gitops
+        - cluster: local
+          values:
+            name: jobset-operator
+            path: components/operators-nightly/jobset-operator
+            namespace: openshift-gitops
+        - cluster: local
+          values:
+            name: leader-worker-set
+            path: components/operators-nightly/leader-worker-set
+            namespace: openshift-gitops
+        - cluster: local
+          values:
+            name: connectivity-link
+            path: components/operators-nightly/connectivity-link
+            namespace: openshift-gitops

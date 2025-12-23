@@ -1,0 +1,59 @@
+# Use cfchase fork and dev-nightly branch
+- op: replace
+  path: /spec/template/spec/source/repoURL
+  value: https://github.com/cfchase/rhoaibu-cluster
+- op: replace
+  path: /spec/template/spec/source/targetRevision
+  value: dev-nightly
+
+# Disable auto-sync: ApplicationSet only creates apps, doesn't update them
+- op: add
+  path: /spec/syncPolicy
+  value:
+    applicationsSync: create-only
+# Apps created with empty syncPolicy (no auto-sync)
+- op: replace
+  path: /spec/template/spec/syncPolicy
+  value: {}
+
+# ODF instance uses dev overlay (same as dev cluster)
+- op: replace
+  path: /spec/generators/2/list/elements/0/values/path
+  value: components/instances/odf-instance/aggregate/overlays/rhoaibu-cluster-dev
+
+# External secrets with nightly pull-secret
+- op: replace
+  path: /spec/generators/6/list/elements/0/values/path
+  value: components/instances/external-secrets-instance/overlays/rhoaibu-cluster-nightly
+
+# Add new instances for RHOAI 3.2 distributed training
+- op: add
+  path: /spec/generators/-
+  value:
+    list:
+      elements:
+        - cluster: local
+          values:
+            name: instance-jobset
+            path: components/instances-nightly/jobset-instance/base
+            namespace: openshift-gitops
+- op: add
+  path: /spec/generators/-
+  value:
+    list:
+      elements:
+        - cluster: local
+          values:
+            name: instance-lws
+            path: components/instances-nightly/leader-worker-set-instance/base
+            namespace: openshift-gitops
+- op: add
+  path: /spec/generators/-
+  value:
+    list:
+      elements:
+        - cluster: local
+          values:
+            name: instance-connectivity-link
+            path: components/instances-nightly/connectivity-link-instance/base
+            namespace: openshift-gitops
